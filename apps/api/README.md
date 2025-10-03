@@ -1,98 +1,151 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# NestJS API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+このディレクトリには、NestJSベースのバックエンドAPIが含まれています。
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 構成
 
-## Description
+### Feature Module アーキテクチャ
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+このAPIは、NestJSのベストプラクティスに従い、機能ごとにモジュールを分離した**Feature Module**アーキテクチャを採用しています。
 
-## Project setup
-
-```bash
-$ pnpm install
+```
+src/
+├── main.ts                    # アプリケーションエントリーポイント
+├── app.module.ts              # ルートモジュール
+├── app.controller.ts          # アプリケーション基本コントローラー
+├── app.service.ts             # アプリケーション基本サービス
+└── products/                  # Products フィーチャーモジュール
+    ├── index.ts               # モジュールエクスポート
+    ├── products.module.ts     # Products モジュール定義
+    ├── products.controller.ts # Products コントローラー
+    └── products.service.ts    # Products サービス
 ```
 
-## Compile and run the project
+### Feature Module のメリット
+
+1. **関心の分離**: 機能ごとにファイルを整理し、コードの可読性と保守性を向上
+2. **再利用性**: モジュールを他のプロジェクトで簡単に再利用可能
+3. **テストの容易性**: 機能単位でテストを分離しやすい
+4. **スケーラビリティ**: 新しい機能を追加する際、既存コードへの影響を最小限に
+5. **依存性の明確化**: モジュール間の依存関係が明確
+
+### 新しい Feature Module の追加方法
+
+1. **ディレクトリを作成**:
+
+   ```bash
+   mkdir -p src/新機能名
+   ```
+
+2. **必要なファイルを作成**:
+
+   ```bash
+   # モジュール
+   touch src/新機能名/新機能名.module.ts
+   # コントローラー
+   touch src/新機能名/新機能名.controller.ts
+   # サービス
+   touch src/新機能名/新機能名.service.ts
+   # エクスポート用index
+   touch src/新機能名/index.ts
+   ```
+
+3. **モジュールを実装**:
+
+   ```typescript
+   // src/新機能名/新機能名.module.ts
+   import { Module } from '@nestjs/common';
+   import { 新機能名Controller } from './新機能名.controller';
+   import { 新機能名Service } from './新機能名.service';
+
+   @Module({
+     controllers: [新機能名Controller],
+     providers: [新機能名Service],
+     exports: [新機能名Service], // 他のモジュールで使う場合
+   })
+   export class 新機能名Module {}
+   ```
+
+4. **app.module.ts に登録**:
+
+   ```typescript
+   import { 新機能名Module } from './新機能名';
+
+   @Module({
+     imports: [ProductsModule, 新機能名Module],
+     // ...
+   })
+   export class AppModule {}
+   ```
+
+## API エンドポイント
+
+### Products
+
+- `GET /products` - 商品一覧を取得
+- `GET /products/:id` - 特定の商品を取得
+
+### Health Check
+
+- `GET /` - アプリケーションの起動確認
+
+## 開発
+
+### 必要な環境
+
+- Node.js 20+
+- pnpm 10.18.0
+
+### セットアップ
 
 ```bash
-# development
-$ pnpm run start
+# 依存関係のインストール（モノレポルートで実行）
+pnpm install
 
-# watch mode
-$ pnpm run start:dev
+# 開発サーバー起動
+pnpm dev
 
-# production mode
-$ pnpm run start:prod
+# ビルド
+pnpm build
+
+# プロダクション起動
+pnpm start
 ```
 
-## Run tests
+### ポート
+
+開発環境: `http://localhost:3001`
+
+### CORS設定
+
+開発環境では `http://localhost:3000` からのアクセスを許可しています。
+本番環境では `src/main.ts` の CORS 設定を適切に変更してください。
+
+## 技術スタック
+
+- **フレームワーク**: NestJS 11.x
+- **言語**: TypeScript 5.x
+- **共有パッケージ**: @repo/shared (モノレポ内パッケージ)
+
+## テスト
 
 ```bash
-# unit tests
-$ pnpm run test
+# ユニットテスト
+pnpm test
 
-# e2e tests
-$ pnpm run test:e2e
+# E2Eテスト
+pnpm test:e2e
 
-# test coverage
-$ pnpm run test:cov
+# テストカバレッジ
+pnpm test:cov
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+## リンター/フォーマッター
 
 ```bash
-$ pnpm install -g @nestjs/mau
-$ mau deploy
+# ESLint
+pnpm lint
+
+# Prettier
+pnpm format
 ```
-
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).

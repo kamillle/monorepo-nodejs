@@ -60,8 +60,7 @@ src/
 ├── app.module.ts
 ├── app.service.ts
 ├── main.ts
-├── products.controller.ts
-└── products.service.ts
+└── products/
 ```
 
 **スクリプト**:
