@@ -1,6 +1,3 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
 # AGENTS.mdを更新
 node scripts/update-agents-md.mjs
 
