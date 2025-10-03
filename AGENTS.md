@@ -7,7 +7,7 @@ NestJS バックエンド API と Next.js フロントエンド、共有パッ�
 
 ## 技術スタック
 
-- **パッケージマネージャー**: pnpm 10.18.0
+- **パッケージマネージャー**: pnpm@10.18.0
 - **ビルドシステム**: Turborepo 2.5.8
 - **言語**: TypeScript
 
@@ -15,14 +15,22 @@ NestJS バックエンド API と Next.js フロントエンド、共有パッ�
 
 ```
 monorepo-nodejs/
+├── .gitignore
+├── .husky/
+│   ├── _/
+│   └── pre-commit
+├── AGENTS.md
 ├── apps/
-│   ├── api/          # NestJS バックエンド API
-│   └── frontend/     # Next.js フロントエンド
+│   ├── api/
+│   └── frontend/
+├── package.json
 ├── packages/
-│   └── shared/       # 共有型定義・ユーティリティ
-├── package.json      # ルート package.json
+│   └── shared/
+├── pnpm-lock.yaml
 ├── pnpm-workspace.yaml
-└── turbo.json        # Turborepo 設定
+├── scripts/
+│   └── update-agents-md.mjs
+└── turbo.json
 ```
 
 ## アプリケーション詳細
@@ -32,8 +40,10 @@ monorepo-nodejs/
 **ポート**: 3001
 **主な依存関係**:
 
-- @nestjs/common, @nestjs/core, @nestjs/platform-express (v11.0.1)
-- @repo/shared (ワークスペース内パッケージ)
+- @nestjs/common (^11.0.1)
+- @nestjs/core (^11.0.1)
+- @nestjs/platform-express (^11.0.1)
+- @repo/shared (workspace:*)
 
 **実装されている機能**:
 
@@ -44,29 +54,31 @@ monorepo-nodejs/
 
 ```
 src/
-├── main.ts                  # アプリケーションエントリーポイント（ポート3001、CORS有効）
-├── app.module.ts            # ルートモジュール
-├── app.controller.ts        # 基本コントローラー
-├── app.service.ts           # 基本サービス
-├── products.controller.ts   # 商品関連コントローラー
-└── products.service.ts      # 商品関連サービス
+├── app.controller.spec.ts
+├── app.controller.ts
+├── app.module.ts
+├── app.service.ts
+├── main.ts
+├── products.controller.ts
+└── products.service.ts
 ```
 
 **スクリプト**:
 
-- `pnpm dev` - 開発サーバー起動（watch モード）
-- `pnpm build` - プロダクションビルド
-- `pnpm test` - テスト実行
+- `pnpm build` - nest build
+- `pnpm dev` - nest start --watch
+- `pnpm start` - nest start
+- `pnpm test` - jest
 
 ### 2. apps/frontend (Next.js フロントエンド)
 
 **ポート**: 3000
 **主な依存関係**:
 
-- next (v15.5.4)
-- react, react-dom (v19.1.0)
-- @repo/shared (ワークスペース内パッケージ)
-- tailwindcss (v4) - スタイリング
+- @repo/shared (workspace:*)
+- next (15.5.4)
+- react (19.1.0)
+- react-dom (19.1.0)
 
 **実装されている機能**:
 
@@ -78,16 +90,18 @@ src/
 
 ```
 app/
-├── layout.tsx       # ルートレイアウト
-├── page.tsx         # トップページ（商品一覧表示）
-└── globals.css      # グローバルスタイル
+├── favicon.ico
+├── globals.css
+├── layout.tsx
+└── page.tsx
 ```
 
 **スクリプト**:
 
-- `pnpm dev` - 開発サーバー起動（Turbopack 使用）
-- `pnpm build` - プロダクションビルド
-- `pnpm start` - プロダクションサーバー起動
+- `pnpm dev` - next dev --turbopack
+- `pnpm build` - next build --turbopack
+- `pnpm start` - next start
+- `pnpm lint` - eslint
 
 ### 3. packages/shared (共有パッケージ)
 
@@ -97,28 +111,8 @@ app/
 **エクスポートされる型・関数**:
 
 ```typescript
-// 関数
-function greet(name: string): string;
-
-// 型定義
-interface User {
-  id: string;
-  name: string;
-  email: string;
-}
-
-interface Product {
-  id: string;
-  name: string;
-  price: number;
-  description: string;
-  inStock: boolean;
-}
-
-interface GetProductsResponse {
-  products: Product[];
-  total: number;
-}
+// 共有パッケージから提供される型定義
+// 詳細は packages/shared/src/index.ts を参照
 ```
 
 **ビルド出力**:
@@ -128,8 +122,7 @@ interface GetProductsResponse {
 
 **スクリプト**:
 
-- `pnpm dev` - TypeScript watch モード
-- `pnpm build` - TypeScript ビルド
+
 
 ## ワークスペース設定
 
@@ -137,8 +130,9 @@ interface GetProductsResponse {
 
 ```yaml
 packages:
-  - "apps/*"
-  - "packages/*"
+  - 'apps/*'
+  - 'packages/*'
+
 ```
 
 ### turbo.json
@@ -146,13 +140,15 @@ packages:
 **タスク設定**:
 
 - `dev`: キャッシュ無効、永続的タスク
-- `build`: 出力先は `dist/**` と `.next/**`
+- `build`: 出力先: dist/**, .next/**
 
 ## 主要スクリプト（ルートレベル）
 
 ```bash
-pnpm dev      # 全アプリケーションの開発サーバー起動
-pnpm build    # 全アプリケーションのビルド
+pnpm dev      # turbo run dev
+pnpm build      # turbo run build
+pnpm test      # echo "Error: no test specified" && exit 1
+pnpm prepare      # husky
 ```
 
 Turborepo により、依存関係を考慮した並列実行が行われます。
@@ -194,3 +190,7 @@ cd packages/shared && pnpm dev
 - フロントエンドは開発環境でポート 3000 で起動します
 - 共有パッケージを変更した場合は、ビルドまたは watch モードが必要です
 - CORS 設定は開発環境用のため、本番環境では適切に設定する必要があります
+
+---
+
+*このファイルは pre-commit フックにより自動生成されます*
