@@ -44,6 +44,7 @@ monorepo-nodejs/
 - @nestjs/common (^11.0.1)
 - @nestjs/core (^11.0.1)
 - @nestjs/platform-express (^11.0.1)
+- @nestjs/swagger (^11.2.0)
 - @repo/shared (workspace:*)
 
 **実装されている機能**:

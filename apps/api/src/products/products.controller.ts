@@ -1,12 +1,26 @@
 import { Controller, Get, Param, NotFoundException } from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiParam,
+} from '@nestjs/swagger';
 import { ProductsService } from './products.service';
 import type { GetProductsResponse, Product } from '@repo/shared';
+import { ProductDto, GetProductsResponseDto } from './dto/product.dto';
 
+@ApiTags('products')
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Get()
+  @ApiOperation({ summary: '商品一覧を取得' })
+  @ApiResponse({
+    status: 200,
+    description: '商品一覧を返す',
+    type: GetProductsResponseDto,
+  })
   getProducts(): GetProductsResponse {
     const products = this.productsService.getAllProducts();
     return {
@@ -16,6 +30,17 @@ export class ProductsController {
   }
 
   @Get(':id')
+  @ApiOperation({ summary: '商品を ID で取得' })
+  @ApiParam({ name: 'id', description: '商品ID', example: '1' })
+  @ApiResponse({
+    status: 200,
+    description: '商品情報を返す',
+    type: ProductDto,
+  })
+  @ApiResponse({
+    status: 404,
+    description: '商品が見つかりません',
+  })
   getProductById(@Param('id') id: string): Product {
     const product = this.productsService.getProductById(id);
     if (!product) {
