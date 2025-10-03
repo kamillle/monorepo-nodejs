@@ -29,6 +29,7 @@ monorepo-nodejs/
 ├── pnpm-lock.yaml
 ├── pnpm-workspace.yaml
 ├── scripts/
+│   ├── README.md
 │   └── update-agents-md.mjs
 └── turbo.json
 ```

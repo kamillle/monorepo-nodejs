@@ -31,7 +31,7 @@ function readYAML(filepath) {
 // ディレクトリの構造を取得
 function getDirectoryStructure(dir, prefix = '', maxDepth = 3, currentDepth = 0) {
   if (currentDepth >= maxDepth) return [];
-  
+
   const items = [];
   try {
     const files = readdirSync(dir).sort();
@@ -40,12 +40,12 @@ function getDirectoryStructure(dir, prefix = '', maxDepth = 3, currentDepth = 0)
       if (['node_modules', 'dist', '.next', '.turbo', '.git', 'coverage'].includes(file)) {
         return;
       }
-      
+
       const filepath = join(dir, file);
       const stat = statSync(filepath);
       const isLast = index === files.length - 1;
       const connector = isLast ? '└── ' : '├── ';
-      
+
       if (stat.isDirectory()) {
         items.push(`${prefix}${connector}${file}/`);
         const newPrefix = prefix + (isLast ? '    ' : '│   ');
@@ -57,7 +57,7 @@ function getDirectoryStructure(dir, prefix = '', maxDepth = 3, currentDepth = 0)
   } catch (err) {
     // エラーは無視
   }
-  
+
   return items;
 }
 
@@ -91,7 +91,7 @@ function generateAgentsMd() {
   const packages = [];
 
   if (existsSync(appsDir)) {
-    const appDirs = readdirSync(appsDir).filter(f => 
+    const appDirs = readdirSync(appsDir).filter(f =>
       statSync(join(appsDir, f)).isDirectory()
     );
     appDirs.forEach(appName => {
@@ -101,7 +101,7 @@ function generateAgentsMd() {
   }
 
   if (existsSync(packagesDir)) {
-    const pkgDirs = readdirSync(packagesDir).filter(f => 
+    const pkgDirs = readdirSync(packagesDir).filter(f =>
       statSync(join(packagesDir, f)).isDirectory()
     );
     pkgDirs.forEach(pkgName => {
@@ -157,7 +157,7 @@ ${apiInfo ? Object.entries(apiInfo.dependencies)
 
 \`\`\`
 src/
-${existsSync(join(appsDir, 'api/src')) 
+${existsSync(join(appsDir, 'api/src'))
   ? getDirectoryStructure(join(appsDir, 'api/src'), '', 1, 0)
     .map(line => line.replace(/^/, ''))
     .join('\n')
@@ -190,7 +190,7 @@ ${frontendInfo ? Object.entries(frontendInfo.dependencies)
 
 \`\`\`
 app/
-${existsSync(join(appsDir, 'frontend/app')) 
+${existsSync(join(appsDir, 'frontend/app'))
   ? getDirectoryStructure(join(appsDir, 'frontend/app'), '', 1, 0)
     .map(line => line.replace(/^/, ''))
     .join('\n')
