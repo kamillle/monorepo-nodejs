@@ -62,3 +62,6 @@ pnpm exec husky init
 - `package.json` の存在を確認
 - エラーメッセージを確認して該当箇所を修正
 
+
+
+

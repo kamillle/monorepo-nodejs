@@ -76,6 +76,7 @@ src/
 **ポート**: 3000
 **主な依存関係**:
 
+- @calcom/embed-react (^1.5.3)
 - @repo/shared (workspace:*)
 - next (15.5.4)
 - react (19.1.0)
@@ -91,6 +92,7 @@ src/
 
 ```
 app/
+├── calcom/
 ├── favicon.ico
 ├── globals.css
 ├── layout.tsx
@@ -99,7 +101,7 @@ app/
 
 **スクリプト**:
 
-- `pnpm dev` - next dev --turbopack
+- `pnpm dev` - next dev --turbopack -p 3000
 - `pnpm build` - next build --turbopack
 - `pnpm start` - next start
 - `pnpm lint` - eslint
