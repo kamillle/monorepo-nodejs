@@ -1,9 +1,13 @@
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { ZodValidationPipe } from 'nestjs-zod';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  // Zod バリデーションパイプをグローバルに適用
+  app.useGlobalPipes(new ZodValidationPipe());
 
   // CORS設定を追加（開発環境用）
   app.enableCors({
