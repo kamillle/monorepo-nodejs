@@ -1,45 +1,51 @@
 import { Injectable } from '@nestjs/common';
 import type { Product } from '@repo/contract';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class ProductsService {
-  private readonly products: Product[] = [
-    {
-      id: '1',
-      name: 'ワイヤレスマウス',
-      price: 2980,
-      description: '高精度センサー搭載の快適なワイヤレスマウス',
-      inStock: true,
-    },
-    {
-      id: '2',
-      name: 'メカニカルキーボード',
-      price: 12800,
-      description: '静音性に優れたメカニカルキーボード',
-      inStock: true,
-    },
-    {
-      id: '3',
-      name: 'USB-Cハブ',
-      price: 4500,
-      description: '7ポート搭載の多機能USBハブ',
-      inStock: false,
-    },
-    {
-      id: '4',
-      name: 'ノートPCスタンド',
-      price: 3200,
-      description: '高さ調節可能なアルミ製スタンド',
-      inStock: true,
-    },
-  ];
+  constructor(private prisma: PrismaService) {}
 
-  getAllProducts(): Product[] {
-    return this.products;
+  async getAllProducts(): Promise<Product[]> {
+    return this.prisma.product.findMany();
   }
 
-  getProductById(id: string): Product | undefined {
-    return this.products.find((product) => product.id === id);
+  async getProductById(id: string): Promise<Product | null> {
+    return this.prisma.product.findUnique({
+      where: { id },
+    });
+  }
+
+  async createProduct(data: {
+    name: string;
+    price: number;
+    description: string;
+    inStock?: boolean;
+  }): Promise<Product> {
+    return this.prisma.product.create({
+      data,
+    });
+  }
+
+  async updateProduct(
+    id: string,
+    data: {
+      name?: string;
+      price?: number;
+      description?: string;
+      inStock?: boolean;
+    },
+  ): Promise<Product> {
+    return this.prisma.product.update({
+      where: { id },
+      data,
+    });
+  }
+
+  async deleteProduct(id: string): Promise<Product> {
+    return this.prisma.product.delete({
+      where: { id },
+    });
   }
 }
 

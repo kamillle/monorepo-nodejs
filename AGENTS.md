@@ -15,14 +15,17 @@ NestJS バックエンド API と Next.js フロントエンド、共有パッ�
 
 ```
 monorepo-nodejs/
+├── .dockerignore
 ├── .gitignore
 ├── .husky/
 │   ├── _/
 │   └── pre-commit
 ├── AGENTS.md
+├── DOCKER_SETUP.md
 ├── apps/
 │   ├── api/
 │   └── frontend/
+├── docker-compose.yml
 ├── package.json
 ├── packages/
 │   └── contract/
@@ -61,6 +64,7 @@ src/
 ├── app.module.ts
 ├── app.service.ts
 ├── main.ts
+├── prisma/
 └── products/
 ```
 

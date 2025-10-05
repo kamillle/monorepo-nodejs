@@ -21,8 +21,8 @@ export class ProductsController {
     description: '商品一覧を返す',
     type: GetProductsResponseDto,
   })
-  getProducts(): GetProductsResponse {
-    const products = this.productsService.getAllProducts();
+  async getProducts(): Promise<GetProductsResponse> {
+    const products = await this.productsService.getAllProducts();
     return {
       products,
       total: products.length,
@@ -41,8 +41,8 @@ export class ProductsController {
     status: 404,
     description: '商品が見つかりません',
   })
-  getProductById(@Param('id') id: string): Product {
-    const product = this.productsService.getProductById(id);
+  async getProductById(@Param('id') id: string): Promise<Product> {
+    const product = await this.productsService.getProductById(id);
     if (!product) {
       throw new NotFoundException(`Product with ID ${id} not found`);
     }
