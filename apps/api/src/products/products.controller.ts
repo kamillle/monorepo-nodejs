@@ -6,7 +6,7 @@ import {
   ApiParam,
 } from '@nestjs/swagger';
 import { ProductsService } from './products.service';
-import type { GetProductsResponse, Product } from '@repo/shared';
+import type { GetProductsResponse, Product } from '@repo/contract';
 import { ProductDto, GetProductsResponseDto } from './dto/product.dto';
 
 @ApiTags('products')

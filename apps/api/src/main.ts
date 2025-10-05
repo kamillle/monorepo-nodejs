@@ -6,10 +6,10 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   // CORS設定を追加（開発環境用）
-  // app.enableCors({
-  //   origin: 'http://localhost:3000', // フロントエンドのURL
-  //   credentials: true,
-  // });
+  app.enableCors({
+    origin: 'http://localhost:3000', // フロントエンドのURL
+    credentials: true,
+  });
 
   // Swagger設定（production以外のみ）
   if (process.env.NODE_ENV !== 'production') {

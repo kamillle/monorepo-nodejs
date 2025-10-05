@@ -125,7 +125,7 @@ pnpm start
 
 - **フレームワーク**: NestJS 11.x
 - **言語**: TypeScript 5.x
-- **共有パッケージ**: @repo/shared (モノレポ内パッケージ)
+- **共有パッケージ**: @repo/contract (モノレポ内パッケージ)
 
 ## テスト
 

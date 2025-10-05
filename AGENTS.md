@@ -25,7 +25,7 @@ monorepo-nodejs/
 │   └── frontend/
 ├── package.json
 ├── packages/
-│   └── shared/
+│   └── contract/
 ├── pnpm-lock.yaml
 ├── pnpm-workspace.yaml
 ├── scripts/
@@ -45,7 +45,7 @@ monorepo-nodejs/
 - @nestjs/core (^11.0.1)
 - @nestjs/platform-express (^11.0.1)
 - @nestjs/swagger (^11.2.0)
-- @repo/shared (workspace:*)
+- @repo/contract (workspace:*)
 
 **実装されている機能**:
 
@@ -77,7 +77,7 @@ src/
 **主な依存関係**:
 
 - @calcom/embed-react (^1.5.3)
-- @repo/shared (workspace:*)
+- @repo/contract (workspace:*)
 - next (15.5.4)
 - react (19.1.0)
 - react-dom (19.1.0)
@@ -106,16 +106,16 @@ app/
 - `pnpm start` - next start
 - `pnpm lint` - eslint
 
-### 3. packages/shared (共有パッケージ)
+### 3. packages/contract (共有パッケージ)
 
-**パッケージ名**: @repo/shared
+**パッケージ名**: @repo/contract
 **役割**: アプリケーション間で共有する型定義・ユーティリティの提供
 
 **エクスポートされる型・関数**:
 
 ```typescript
 // 共有パッケージから提供される型定義
-// 詳細は packages/shared/src/index.ts を参照
+// 詳細は packages/contract/src/index.ts を参照
 ```
 
 **ビルド出力**:
@@ -160,7 +160,7 @@ Turborepo により、依存関係を考慮した並列実行が行われます�
 
 1. **型の共有**:
 
-   - `packages/shared` で定義された型を、`api` と `frontend` の両方で利用
+   - `packages/contract` で定義された型を、`api` と `frontend` の両方で利用
    - 例: `Product`, `GetProductsResponse` インターフェース
 
 2. **API 通信**:
@@ -169,7 +169,7 @@ Turborepo により、依存関係を考慮した並列実行が行われます�
    - バックエンドは CORS を有効化して `http://localhost:3000` からのアクセスを許可
 
 3. **開発フロー**:
-   - `packages/shared` の変更は自動的に `api` と `frontend` に反映される（watch モード利用時）
+   - `packages/contract` の変更は自動的に `api` と `frontend` に反映される（watch モード利用時）
    - 型安全性により、API の変更がフロントエンドに即座に伝播
 
 ## セットアップ方法
@@ -184,7 +184,7 @@ pnpm dev
 # または個別起動
 cd apps/api && pnpm dev
 cd apps/frontend && pnpm dev
-cd packages/shared && pnpm dev
+cd packages/contract && pnpm dev
 ```
 
 ## 注意事項

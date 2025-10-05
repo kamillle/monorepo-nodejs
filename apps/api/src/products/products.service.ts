@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import type { Product } from '@repo/shared';
+import type { Product } from '@repo/contract';
 
 @Injectable()
 export class ProductsService {

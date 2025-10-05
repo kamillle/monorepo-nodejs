@@ -113,7 +113,7 @@ function generateAgentsMd() {
   // 特定のアプリ情報を取得
   const apiInfo = apps.find(a => a.name === 'api');
   const frontendInfo = apps.find(a => a.name === 'frontend');
-  const sharedInfo = packages.find(p => p.name === '@repo/shared');
+  const sharedInfo = packages.find(p => p.name === '@repo/contract');
 
   // AGENTS.mdの内容を生成
   let content = `# monorepo-nodejs リポジトリ構成
@@ -144,7 +144,7 @@ ${getDirectoryStructure(rootDir, '', 2, 0).slice(0, 20).join('\n')}
 **主な依存関係**:
 
 ${apiInfo ? Object.entries(apiInfo.dependencies)
-  .filter(([key]) => key.startsWith('@nestjs') || key === '@repo/shared')
+  .filter(([key]) => key.startsWith('@nestjs') || key === '@repo/contract')
   .map(([key, value]) => `- ${key} (${value})`)
   .join('\n') : '- 情報なし'}
 
@@ -204,16 +204,16 @@ ${frontendInfo ? Object.entries(frontendInfo.scripts)
   .map(([key, value]) => `- \`pnpm ${key}\` - ${value}`)
   .join('\n') : ''}
 
-### 3. packages/shared (共有パッケージ)
+### 3. packages/contract (共有パッケージ)
 
-**パッケージ名**: ${sharedInfo ? sharedInfo.name : '@repo/shared'}
+**パッケージ名**: ${sharedInfo ? sharedInfo.name : '@repo/contract'}
 **役割**: アプリケーション間で共有する型定義・ユーティリティの提供
 
 **エクスポートされる型・関数**:
 
 \`\`\`typescript
 // 共有パッケージから提供される型定義
-// 詳細は packages/shared/src/index.ts を参照
+// 詳細は packages/contract/src/index.ts を参照
 \`\`\`
 
 **ビルド出力**:
@@ -263,7 +263,7 @@ Turborepo により、依存関係を考慮した並列実行が行われます�
 
 1. **型の共有**:
 
-   - \`packages/shared\` で定義された型を、\`api\` と \`frontend\` の両方で利用
+   - \`packages/contract\` で定義された型を、\`api\` と \`frontend\` の両方で利用
    - 例: \`Product\`, \`GetProductsResponse\` インターフェース
 
 2. **API 通信**:
@@ -272,7 +272,7 @@ Turborepo により、依存関係を考慮した並列実行が行われます�
    - バックエンドは CORS を有効化して \`http://localhost:3000\` からのアクセスを許可
 
 3. **開発フロー**:
-   - \`packages/shared\` の変更は自動的に \`api\` と \`frontend\` に反映される（watch モード利用時）
+   - \`packages/contract\` の変更は自動的に \`api\` と \`frontend\` に反映される（watch モード利用時）
    - 型安全性により、API の変更がフロントエンドに即座に伝播
 
 ## セットアップ方法
@@ -287,7 +287,7 @@ pnpm dev
 # または個別起動
 cd apps/api && pnpm dev
 cd apps/frontend && pnpm dev
-cd packages/shared && pnpm dev
+cd packages/contract && pnpm dev
 \`\`\`
 
 ## 注意事項
